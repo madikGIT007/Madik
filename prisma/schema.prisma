@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+enum Subject {
+  informatics
+  physics
+}
+
+enum Difficulty {
+  easy
+  medium
+  hard
+}
+
+model User {
+  id        String       @id @default(cuid())
+  nickname  String       @unique
+  grade     Int
+  createdAt DateTime     @default(now())
+  results   GameResult[]
+}
+
+model Question {
+  id           String     @id @default(cuid())
+  subject      Subject
+  topic        String
+  difficulty   Difficulty
+  text         String
+  options      String
+  correctIndex Int
+  explanation  String?
+  createdAt    DateTime   @default(now())
+}
+
+model GameResult {
+  id           String   @id @default(cuid())
+  userId       String
+  subject      Subject
+  score        Int
+  correctCount Int
+  totalCount   Int
+  durationSec  Int
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
